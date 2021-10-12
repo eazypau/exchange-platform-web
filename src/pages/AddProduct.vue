@@ -1,132 +1,137 @@
 <template>
-  <div>
+  <div class="md:px-5">
+    <div
+      v-if="uploading"
+      class="flex items-center justify-center z-40 inset-0 w-screen h-screen bg-gray-500 bg-opacity-50 absolute"
+    >
+      <svg viewBox="0 0 50 50" class="spinning">
+        <circle class="ring" cx="25" cy="25" r="20"></circle>
+        <circle class="ball" cx="25" cy="5" r="3.5"></circle>
+      </svg>
+    </div>
     <div>
-      <div
-        class="flex flex-wrap items-start mx-52 gap-10 border-2 p-2"
-        id="productImgCont"
-      >
-        <!-- index to point at the items -->
-        <Image
-          v-for="(image, index) in productPhotos"
-          :key="index"
-          :src="image"
-        />
-        <div class="flex flex-col justify-around h-48">
-          <input
-            class="hidden"
-            type="file"
-            accept="image/*"
-            name="image"
-            id="uploadProductImg"
-            @change="uploadProductImage($event)"
+      <div>
+        <div
+          class="flex flex-wrap items-start gap-3 border border-gray-400 rounded-md p-2 h-40 overflow-y-scroll"
+          id="productImgCont"
+        >
+          <!-- index to point at the items -->
+          <Image
+            v-for="(image, index) in productPhotos"
+            :key="index"
+            :src="image"
           />
-          <label
-            class="border-2 border-gray-400 p-2 rounded-md hover:bg-blue-600 hover:text-white transition ease-linear duration-300"
-            for="uploadProductImg"
-            style="cursor: pointer"
-            >Upload</label
-          >
-          <input
-            class="hidden"
-            type="button"
-            name="popImage"
-            id="popProductImage"
-            @click="popProductImage()"
-          />
-          <label
-            class="border-2 border-gray-400 p-2 rounded-md hover:bg-blue-600 hover:text-white transition ease-linear duration-300"
-            for="popProductImage"
-            style="cursor: pointer"
-            >Delete</label
-          >
+          <div class="flex flex-col justify-around h-40 text-sm">
+            <input
+              class="hidden"
+              type="file"
+              accept="image/*"
+              name="image"
+              id="uploadProductImg"
+              @change="uploadProductImage($event)"
+            />
+            <label
+              class="px-3 py-2 text-white rounded-md btnBlue hover:opacity-70 transition ease-linear duration-300"
+              for="uploadProductImg"
+              style="cursor: pointer"
+              >Upload</label
+            >
+            <input
+              class="hidden"
+              type="button"
+              name="popImage"
+              id="popProductImage"
+              @click="popProductImage()"
+            />
+            <label
+              class="px-3 py-2 text-white rounded-md btnBlue hover:opacity-70 transition ease-linear duration-300"
+              for="popProductImage"
+              style="cursor: pointer"
+              >Delete</label
+            >
+          </div>
+        </div>
+        <div class="mt-2">
+          <p class="text-left text-xs">
+            *Please note that the first photo will be the primary.
+          </p>
         </div>
       </div>
-      <div class="ml-52 mt-2">
-        <p class="text-left text-sm">*Please note that the first photo will be the primary.</p>
-      </div>
-    </div>
-    <div class="flex px-52">
-      <div class="flex flex-col items-start mr-10">
-        <label for="productName" class="text-gray-600 mt-3 h-auto text-left p-2"
-          >Product Name</label
-        >
-        <input
-          class="border-2 border-gray-400 rounded-lg p-1.5"
-          type="text"
-          name="productName"
-          placeholder="Enter product name"
-          v-model="productName"
-          required
-        />
-      </div>
-      <div class="flex flex-col items-start mr-10">
-        <label
-          for="productPoints"
-          class="text-gray-600 mt-3 h-auto text-left p-2"
-          >Product Points</label
-        >
-        <input
-          class="border-2 border-gray-400 rounded-lg p-1.5"
-          type="number"
-          name="productPoints"
-          placeholder="Enter product value"
-          v-model="productPoints"
-          required
-        />
-      </div>
-      <div class="flex flex-col items-start mr-10">
-        <label for="productQty" class="text-gray-600 mt-3 h-auto text-left p-2"
-          >Product Quantity</label
-        >
-        <input
-          class="border-2 border-gray-400 rounded-lg p-1.5"
-          type="number"
-          name="productQty"
-          placeholder="Enter product quantity"
-          v-model="productQty"
-          required
-        />
-      </div>
-      <div class="flex justify-start">
-        <div class="flex flex-col items-start">
-          <label class="text-gray-600 mt-3 p-2" for="condition"
-            >Condition</label
-          >
-          <select
-            class="border-2 border-gray-400 rounded-md text-sm p-2"
-            name="condition"
-            v-model="productCondition"
-          >
-            <option value="almostNew">ALMOST NEW</option>
-            <option value="slightlyUsed">SLIGHTLY USED</option>
-            <option value="used">USED</option>
-          </select>
+      <div class="flex flex-col text-sm w-full xl:max-w-md pt-3">
+        <div class="flex flex-col md:flex-row justify-between md:items-end">
+          <div class="flex flex-col flex-1 md:pr-2">
+            <label for="productName" class="addProdLabel">Product Name</label>
+            <input
+              class="addProdInput"
+              type="text"
+              name="productName"
+              placeholder="Enter product name"
+              v-model="productName"
+              required
+            />
+          </div>
+          <div class="flex flex-col flex-1 md:pl-2">
+            <label for="productPoints" class="addProdLabel"
+              >Product Points</label
+            >
+            <input
+              class="addProdInput"
+              type="number"
+              name="productPoints"
+              placeholder="Enter product value"
+              v-model="productPoints"
+              required
+            />
+          </div>
+        </div>
+        <div class="flex flex-col md:flex-row md:items-end">
+          <div class="flex flex-col flex-1 md:pr-2">
+            <label for="productQty" class="addProdLabel"
+              >Product Quantity</label
+            >
+            <input
+              class="addProdInput"
+              type="number"
+              name="productQty"
+              placeholder="Enter product quantity"
+              v-model="productQty"
+              required
+            />
+          </div>
+
+          <div class="flex flex-col flex-1 md:pl-2">
+            <label class="addProdLabel" for="condition">Condition</label>
+            <select
+              class="border border-gray-400 rounded-md py-1.5 px-1"
+              name="condition"
+              v-model="productCondition"
+            >
+              <option value="Almost new">ALMOST NEW</option>
+              <option value="Slightly used">SLIGHTLY USED</option>
+              <option value="Frequently used">FREQUENTLY USED</option>
+            </select>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex flex-col items-start px-52">
-      <label
-        for="productDescription"
-        class="text-gray-600 mt-3 h-auto w-52 text-left p-2"
-        >Description</label
-      >
-      <textarea
-        name="productDescription"
-        class="border-2 border-gray-400 rounded-lg p-1.5"
-        id="productDescription"
-        cols="90"
-        rows="10"
-        placeholder="Enter product description here."
-        v-model="productDescription"
-      ></textarea>
-      <div class="mt-7">
-        <Button
-          class="mb-10 transform hover:scale-125 hover:opacity-75 transition ease-out duration-300"
-          type="submit"
-          @click="createProduct"
-          label="Add Product"
-          :primary="true"
-        />
+      <div class="flex flex-col items-start">
+        <label for="productDescription" class="addProdLabel">Description</label>
+        <textarea
+          name="productDescription"
+          class="border border-gray-400 text-sm rounded-lg p-1.5 w-full resize-none"
+          id="productDescription"
+          rows="6"
+          placeholder="Enter product description here."
+          v-model="productDescription"
+        ></textarea>
+        <div class="flex justify-end w-full mt-5">
+          <Button
+            class="transform hover:opacity-75 transition ease-out duration-300"
+            type="submit"
+            @click="createProduct"
+            label="Add Product"
+            :primary="true"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -152,6 +157,7 @@ export default {
       productCondition: "",
       productDescription: "",
       imgFiles: [],
+      uploading: false,
     };
   },
   methods: {
@@ -204,6 +210,7 @@ export default {
         });
         return;
       }
+      this.uploading = true;
       Swal.fire({
         icon: "info",
         title: "Uploading in progress...",
@@ -212,7 +219,7 @@ export default {
       });
       const user = firebase.auth().currentUser;
       const productDetails = {
-        id: Date.now(),
+        id: String(Date.now()),
         uploadedBy: user.uid,
         name: this.productName,
         points: parseInt(this.productPoints),
@@ -230,6 +237,7 @@ export default {
       this.productPhotos = [];
       this.productCondition = "";
       this.productDescription = "";
+      this.uploading = false;
     },
     uploadProductImage(event) {
       if (this.productPhotos.length <= 2) {
@@ -241,6 +249,10 @@ export default {
       } else {
         console.log("Cannot upload more than 3 images...");
       }
+    },
+    popProductImage() {
+      this.productPhotos.pop();
+      this.imgFiles.pop();
     },
   },
   components: {
@@ -255,4 +267,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.btnBlue {
+  background-color: $blue;
+}
+</style>

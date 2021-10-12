@@ -1,15 +1,11 @@
 <template>
   <div>
-    <div v-if="isEmpty" class="flex flex-wrap items-start mx-52 gap-10 border-2 p-2 mb-20">
+    <div v-if="isEmpty" class="border rounded-md p-2">
       <h1>Currently there is no product here.</h1>
     </div>
-    <div className="px-48 pb-10 flex flex-wrap gap-9 justify-evenly mb-10">
+    <div className="grid grid-cols-2 xl:flex flex-wrap gap-2 md:gap-6 mb-10">
       <transition-group name="card">
-        <Card
-          :post="post"
-          v-for="(post, index) in myProducts"
-          :key="index"
-        />
+        <Card :post="post" v-for="(post, index) in myProducts" :key="index" />
       </transition-group>
     </div>
   </div>
@@ -18,8 +14,9 @@
 <script>
 import Card from "/@/components/organism/Card/Card.vue";
 import { userProduct } from "../store/user.product.js";
-import { computed } from '@vue/runtime-core';
-
+import { computed } from "@vue/runtime-core";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   name: "MyPurchase",
@@ -32,22 +29,25 @@ export default {
     Card,
   },
   setup() {
-    const store = userProduct()
-    store.displayUserProduct()
-    const myProducts = computed(() => store.getProductDisplay)
-    const isEmpty = computed(() => store.getEmptyStatus)
+    const store = userProduct();
+    firebase.auth().onAuthStateChanged((user) => {
+      const uid = user.uid;
+      store.displayUserProduct(uid);
+    });
+    const myProducts = computed(() => store.getProductDisplay);
+    const isEmpty = computed(() => store.getEmptyStatus);
 
-    return { store, myProducts, isEmpty }
+    return { store, myProducts, isEmpty };
   },
 };
 </script>
 
 <style scoped>
-.card-enter-from {
+/* .card-enter-from {
   transform: scale(0);
 }
 
 .card-enter-active {
-  transition: all 2s ease;
-}
+  transition: all 0.5s ease;
+} */
 </style>

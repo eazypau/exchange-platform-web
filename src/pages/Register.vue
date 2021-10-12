@@ -1,138 +1,124 @@
 <template>
-  <div class="flex flex-col items-center h-screen justify-center">
-    <h1 class="text-xl font-black">Register</h1>
-    <div>
-      <div class="mt-8">
-        <div className="flex flex-col">
+  <div class="py-20">
+    <div
+      class="w-full max-w-sm p-6 m-auto bg-white rounded-md shadow-md dark:bg-gray-800"
+    >
+      <h1
+        class="text-3xl font-semibold text-center text-gray-700 dark:text-white"
+      >
+        Exchange Platform
+      </h1>
+
+      <form class="mt-6">
+        <div>
           <label
-            for="userName"
-            className="mt-3 p-2 h-auto w-52 text-gray-600 text-left"
-            >Username</label
-          >
-          <input
-            type="text"
-            placeholder="Username"
-            className="storybook-textbox"
-            v-model="userName"
-            required
-          />
-        </div>
-        <div className="flex flex-col">
-          <label
-            for="email"
-            className="mt-3 p-2 h-auto w-52 text-gray-600 text-left"
+            for="username"
+            class="flex text-sm text-gray-800 dark:text-gray-200"
             >Email</label
           >
           <input
             type="text"
-            placeholder="Email"
-            className="storybook-textbox"
+            placeholder="email"
             v-model="email"
-            required
+            class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
           />
         </div>
-        <div className="flex flex-col">
-          <label
-            for="password"
-            className="mt-3 p-2 h-auto w-52 text-gray-600 text-left"
-            >Password</label
-          >
+
+        <div class="mt-4">
+          <div class="flex items-center">
+            <label
+              for="password"
+              class="block text-sm text-gray-800 dark:text-gray-200"
+              >Password</label
+            >
+          </div>
           <input
             type="password"
-            placeholder="Password"
-            className="storybook-textbox"
             v-model="password"
-            required
+            class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
           />
         </div>
-        <div className="flex flex-col">
-          <label
-            for="retype"
-            className="mt-3 p-2 h-auto w-52 text-gray-600 text-left"
-            >Retype Password</label
-          >
+
+        <div class="mt-4">
+          <div class="flex items-center">
+            <label
+              for="retype-password"
+              class="block text-sm text-gray-800 dark:text-gray-200"
+              >Retype Password</label
+            >
+          </div>
           <input
             type="password"
-            placeholder="Retype Password"
-            className="storybook-textbox"
             v-model="retype"
-            required
+            @keypress.enter="register"
+            class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
           />
         </div>
-      </div>
-      <div class="mt-10">
-        <Button
-          type="submit"
-          @click="register"
-          label="Register"
-          :primary="true"
-          size="medium"
-        />
-        <p className="mt-8">
-          Have an Account? <router-link to="/login">Login Here</router-link>
-        </p>
-      </div>
+
+        <div class="mt-6">
+          <button
+            type="button"
+            @click="register"
+            class="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+          >
+            Register
+          </button>
+        </div>
+      </form>
+      <p class="mt-5 text-xs font-light text-center text-gray-400">
+        Have an account?
+        <router-link
+          to="/login"
+          class="font-medium text-gray-700 dark:text-gray-200 hover:underline"
+          >Login here</router-link
+        >
+      </p>
     </div>
   </div>
 </template>
 <script>
-import Textbox from "/@/components/molecule/Textbox/Textbox.vue";
-import Button from "/@/components/molecule/Button/Button.vue";
-import { createProfile } from "../utils/firebase";
-import firebase from "firebase";
+// import Textbox from "/@/components/molecule/Textbox/Textbox.vue";
+// import Button from "/@/components/molecule/Button/Button.vue";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+import { createAcc } from "../utils/auth";
 
 export default {
   name: "Register",
-  components: {
-    Textbox,
-    Button,
-  },
+  // components: {
+  //   Textbox,
+  //   Button,
+  // },
   data() {
     return {
       email: "",
       password: "",
       retype: "",
-      userName: "",
+      // userName: "",
     };
   },
   methods: {
     async register() {
-      if (this.password === this.retype) {
-        // firebase
-        //   .auth()
-        //   .createUserWithEmailAndPassword(this.email, this.password)
-        //   .then(() => {
-        //     const user = firebase.auth().currentUser;
-        //     const actionsCodeSettings = {
-        //       url: `${import.meta.env.VITE_APP_BASE_URL}`,
-        //     };
-        //     user.sendEmailVerification(actionsCodeSettings);
-        //   })
-        //   .catch((err) => alert(err));
-
-        const firebaseAuth = await firebase.auth();
-        const createUser = await firebaseAuth.createUserWithEmailAndPassword(
-          this.email,
-          this.password
-        ).then(cred => {
-          console.log(cred.user);
-          console.log(cred.user.uid);
-          return cred.user.uid
-        })
-        console.log("Created user: ", createUser);
-        const userData = {
-          id: createUser,
-          name: this.userName,
-          email: this.email,
-          about: "default",
-          store_address: "default",
-          points: 123,
-        };
-        await createProfile(createUser, userData);
-        this.$router.push({ name: "Home" });
+      if (this.email === "" || this.password === "" || this.retype === "") {
+        Swal.fire({
+          title: "Uh Oh!",
+          text: "Please enter all the infomation required.",
+          icon: "error",
+          confirmButtonColor: "#1ea7fd",
+        });
         return;
+      }
+      if (this.password === this.retype) {
+        // const firebaseAuth = firebase.auth();
+        console.log("creating user now...");
+        createAcc(this.email, this.password);
       } else {
-        alert("Wrong Password");
+        Swal.fire({
+          title: "Uh Oh!",
+          text: "Password does not match. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#1ea7fd",
+        });
       }
     },
   },

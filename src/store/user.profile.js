@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import firebase from "firebase/app";
 import "firebase/auth";
-import { getUserProfileDoc, updateUserProfile } from "../utils/firebase";
+import { getUserProfileDoc, updateUserProfile } from "../utils/profile";
 import { downloadProfilePic, uploadProfileImage } from "../utils/storage";
 
 // useStore could be anything like useUser, useCart
@@ -15,6 +15,8 @@ export const userProfile = defineStore({
       firstName: "",
       lastName: "",
       profilePic: "",
+      wallet: null,
+      isLogin: false,
     };
   },
   getters: {
@@ -33,6 +35,12 @@ export const userProfile = defineStore({
     getProfilePic: (state) => {
       return state.profilePic;
     },
+    getWallet: (state) => {
+      return state.wallet;
+    },
+    getIsLogin: (state) => {
+      return state.isLogin;
+    },
   },
   actions: {
     getProfile() {
@@ -45,8 +53,9 @@ export const userProfile = defineStore({
           this.changedFirstName(userDetails.first_name);
           this.changedLastName(userDetails.last_name);
           this.changedShippingAddress(userDetails.address);
+          this.changeWallet(userDetails.points);
           // console.log("user details in state: ", userDetails);
-          console.log("Successfully read user profile...");
+          // console.log("Successfully read user profile...");
         } else {
           console.log("Fail to read user profile");
         }
@@ -60,7 +69,7 @@ export const userProfile = defineStore({
         // console.log(uid);
         try {
           await updateUserProfile(newDetails, uid);
-          console.log("Successfully update user profile!");
+          // console.log("Successfully update user profile!");
           // this.getProfile();
         } catch (error) {
           console.log(error);
@@ -99,6 +108,12 @@ export const userProfile = defineStore({
     },
     changeProfilePic(payload) {
       this.profilePic = payload;
+    },
+    changeIsLogin(payload) {
+      this.isLogin = payload;
+    },
+    changeWallet(payload) {
+      this.wallet = payload;
     },
   },
 });

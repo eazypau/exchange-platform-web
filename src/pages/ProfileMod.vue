@@ -1,120 +1,132 @@
 <template>
-  <div class="flex items-center ml-52 mt-12">
-    <div>
-      <Image :src="profilePicture" class="rounded-full" />
-      <div class="relative left-10 bottom-5">
-        <p>
-          <input
-            class="hidden"
-            type="file"
-            accept="image/*"
-            name="image"
-            id="file"
-            @change="loadProfileImg($event)"
-          />
-        </p>
-        <p>
-          <label
-            class="opacity-0 border-2 border-gray-500 rounded-md p-1 bg-gray-200 text-xs font-semibold hover:opacity-100"
-            for="file"
-            style="cursor: pointer"
-            >Upload Image</label
-          >
-        </p>
+  <div class="py-10 px-10 md:px-0">
+    <div
+      v-if="inProgress"
+      class="flex items-center justify-center z-40 inset-0 w-screen h-screen bg-gray-500 bg-opacity-50 absolute"
+    >
+      <svg viewBox="0 0 50 50" class="spinning">
+        <circle class="ring" cx="25" cy="25" r="20"></circle>
+        <circle class="ball" cx="25" cy="5" r="3.5"></circle>
+      </svg>
+    </div>
+    <div class="md:flex justify-center">
+      <div class="md:min-w-md">
+        <div class="flex justify-between items-center">
+          <p className="text-2xl md:text-3xl text-left font-semibold mb-1">
+            My Profile
+          </p>
+          <p class="text-sm font-medium text-gray-400">
+            Wallet: {{ wallet }} points
+          </p>
+        </div>
+        <div class="h-px bg-black"></div>
       </div>
     </div>
-    <p className="pl-10 pb-0 text-left font-semibold text-5xl">User Profile</p>
-  </div>
-  <div className="flex flex-col items-start pb-12 pl-52">
-    <div className="flex">
-      <div className="flex flex-col items-start pb-8 pr-16">
-        <label
-          for="firstName"
-          class="text-gray-600 mt-3 h-auto w-52 text-left p-2"
-          >First Name</label
-        >
-        <input
-          class="border-4 border-gray-400 rounded-lg p-1.5"
-          type="text"
-          name="firstName"
-          v-model="firstName"
-        />
+    <div className="flex flex-col items-center mt-10">
+      <div class="flex flex-col md:flex-row items-center justify-center">
+        <Image :src="profilePicture" class="rounded-full" />
+        <div class="md:ml-5 mt-5 md:mt-0">
+          <p>
+            <input
+              class="hidden"
+              type="file"
+              accept="image/*"
+              name="image"
+              id="file"
+              @change="loadProfileImg($event)"
+            />
+          </p>
+          <p>
+            <label
+              class="px-4 py-2 text-sm md:text-base font-medium text-white btnBlue capitalize transition-colors duration-300 transform rounded-md hover:opacity-75 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+              for="file"
+              >Upload Image</label
+            >
+          </p>
+        </div>
       </div>
-      <div className="flex flex-col items-start pb-8">
-        <label
-          for="lastName"
-          class="text-gray-600 mt-3 h-auto w-52 text-left p-2"
-          >Last Name</label
-        >
-        <input
-          class="border-4 border-gray-400 rounded-lg p-1.5"
-          type="text"
-          name="lastName"
-          v-model="lastName"
-        />
-      </div>
-    </div>
-
-    <div className="flex flex-col items-start pb-8">
-      <!-- <Textbox nametag="aboutUser" text="About Me" /> -->
-      <label for="aboutMe" class="text-gray-600 mt-3 h-auto w-52 text-left p-2"
-        >About Me</label
+      <div
+        class="flex flex-col md:flex-row md:min-w-md text-sm w-full md:w-auto"
       >
-      <textarea
-        name="aboutMe"
-        class="border-4 border-gray-400 rounded-lg p-1.5"
-        id="aboutMe"
-        cols="60"
-        rows="5"
-        v-model="aboutMe"
-      ></textarea>
-    </div>
-    <div className="flex items-end">
-      <div className="flex flex-col items-start">
-        <!-- <Textbox nametag="shipAdd" text="Shipping Address" /> -->
-        <label
-          for="shippingAddress"
-          class="text-gray-600 mt-3 h-auto w-52 text-left p-2"
-          >Shipping Address</label
-        >
+        <div className="flex flex-1 flex-col md:pr-2">
+          <label for="firstName" class="editProfileLabel">First Name:</label>
+          <input
+            class="editProfileInput"
+            type="text"
+            name="firstName"
+            v-model="firstName"
+          />
+        </div>
+        <div className="flex flex-1 flex-col md:pl-2">
+          <label for="lastName" class="editProfileLabel">Last Name:</label>
+          <input
+            class="editProfileInput"
+            type="text"
+            name="lastName"
+            v-model="lastName"
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col md:min-w-md text-sm w-full md:w-auto">
+        <label for="aboutMe" class="editProfileLabel">About Me:</label>
         <textarea
-          name="shippingAddress"
-          class="border-4 border-gray-400 rounded-lg p-1.5"
-          id="shippingAddress"
-          cols="60"
-          rows="5"
-          v-model="shippingAddress"
+          name="aboutMe"
+          class="editProfileInput resize-none"
+          id="aboutMe"
+          rows="3"
+          v-model="aboutMe"
         ></textarea>
       </div>
-      <div>
-        <!-- <button @click="updateProfileDetail">Update Profile</button> -->
-        <Button
-          class="ml-5 transform hover:scale-110 hover:opacity-75 transition ease-out duration-300"
-          type="submit"
-          @click="updateProfileDetail"
-          label="Update Profile"
-          :primary="true"
-        />
+      <div className="flex flex-col pb-4 md:min-w-md text-sm w-full md:w-auto">
+        <div className="flex flex-col">
+          <label for="shippingAddress" class="editProfileLabel"
+            >Shipping Address</label
+          >
+          <textarea
+            name="shippingAddress"
+            class="editProfileInput resize-none"
+            id="shippingAddress"
+            rows="3"
+            v-model="shippingAddress"
+          ></textarea>
+        </div>
+        <div class="mt-4 flex justify-end">
+          <div>
+            <!-- <Button
+              class="transform hover:opacity-75 transition ease-out duration-300"
+              type="submit"
+              @click="updateProfileDetail"
+              label="Update Profile"
+              :primary="true"
+            /> -->
+            <button
+              @click="updateProfileDetail"
+              type="button"
+              class="px-4 py-2 text-sm md:text-base font-medium text-white btnBlue capitalize transition-colors duration-300 transform rounded-md hover:opacity-75 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+            >
+              Update Profile
+            </button>
+          </div>
+          <div class="ml-2">
+            <!-- <Button
+              class="transform hover:opacity-75 transition ease-out duration-300"
+              type="button"
+              @click="deleteAccount"
+              label="Delete Account"
+              :primary="true"
+            /> -->
+            <button
+              @click="deleteAccount"
+              type="button"
+              class="px-4 py-2 text-sm md:text-base font-medium text-white btnRed capitalize transition-colors duration-300 transform rounded-md hover:opacity-75 focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-80"
+            >
+              Delete Account
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <div>
-    <div class="flex px-24 py-10 justify-around">
-      <router-link to="/profile" class="text-left text-3xl"
-        >My Products</router-link
-      >
-      <router-link to="/profile/my-purchase" class="text-left text-3xl"
-        >My Purchase</router-link
-      >
-      <router-link to="/profile/add-product" class="text-left text-3xl"
-        >Add Product</router-link
-      >
-    </div>
-    <router-view v-slot="{ Component }">
-      <transition name="route" mode="out-in">
-        <component :is="Component"></component>
-      </transition>
-    </router-view>
   </div>
 </template>
 
@@ -122,72 +134,117 @@
 import Image from "/@/components/molecule/Image/Image.vue";
 import Button from "/@/components/molecule/Button/Button.vue";
 import { userProfile } from "../store/user.profile.js";
+import { deleteAcc } from "../utils/auth.js";
+import { deleteProfilePhoto } from "../utils/storage.js";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 export default {
   name: "ProfileMod",
+  data() {
+    return {
+      inProgress: false,
+    };
+  },
   computed: {
     firstName: {
       get() {
-        return userProfile().getFirstName;
+        return this.store.getFirstName;
       },
       set(payload) {
-        return userProfile().changedFirstName(payload);
+        return this.store.changedFirstName(payload);
       },
     },
     lastName: {
       get() {
-        return userProfile().getLastName;
+        return this.store.getLastName;
       },
       set(payload) {
-        return userProfile().changedLastName(payload);
+        return this.store.changedLastName(payload);
       },
     },
     aboutMe: {
       get() {
-        return userProfile().getAboutMe;
+        return this.store.getAboutMe;
       },
       set(payload) {
-        return userProfile().changedAboutMe(payload);
+        return this.store.changedAboutMe(payload);
       },
     },
     shippingAddress: {
       get() {
-        return userProfile().getShippingAddress;
+        return this.store.getShippingAddress;
       },
       set(payload) {
-        return userProfile().changedShippingAddress(payload);
+        return this.store.changedShippingAddress(payload);
       },
     },
+    wallet() {
+      return this.store.getWallet;
+    },
     profilePicture() {
-      return userProfile().getProfilePic;
+      return this.store.getProfilePic;
     },
   },
   methods: {
     loadProfileImg(event) {
       // this.profilePicture = URL.createObjectURL(event.target.files[0]);
       // console.log(this.profilePicture);
-      userProfile().uploadProfileImg(event.target.files[0]);
+      this.store.uploadProfileImg(event.target.files[0]);
       // need to store the image and load it when user logins
     },
     handleBack() {
       this.$router.go(-1);
     },
-    async updateProfileDetail() {
+    updateProfileDetail() {
       // console.log(this.lastName);
-      const newDetails = {
-        first_name: this.firstName,
-        last_name: this.lastName,
-        about: this.aboutMe,
-        address: this.shippingAddress,
-      };
-      await userProfile().updateProfile(newDetails);
       Swal.fire({
-        title: "Success!",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1500,
+        title: "Are you sure you want to update your profile?",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        denyButtonText: `No`,
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          const newDetails = {
+            first_name: this.firstName,
+            last_name: this.lastName,
+            about: this.aboutMe,
+            address: this.shippingAddress,
+          };
+          await this.store.updateProfile(newDetails);
+          Swal.fire({
+            title: "Success!",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else if (result.isDenied) {
+          // Swal.fire("Remain", "", "info");
+          return;
+        }
+      });
+    },
+    deleteAccount() {
+      Swal.fire({
+        title: "Are you sure you want to delete your account?",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        denyButtonText: `No`,
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          this.inProgress = true;
+          deleteProfilePhoto();
+          await deleteAcc();
+          this.inProgress = false;
+          Swal.fire("Succesfully delete account...", "", "success");
+          this.$router.push("/login");
+        } else if (result.isDenied) {
+          Swal.fire("Request canceled", "", "info");
+        }
       });
     },
   },
@@ -198,13 +255,12 @@ export default {
   setup() {
     const store = userProfile();
 
-    store.getProfile();
-    store.getProfileImg();
+    return { store };
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss">
 .route-enter-from {
   opacity: 0;
   transform: translateX(100px);
@@ -225,5 +281,13 @@ export default {
 
 .router-link-exact-active {
   border-bottom: 1px solid black;
+}
+
+.btnBlue {
+  background-color: $blue;
+}
+
+.btnRed {
+  background-color: $red;
 }
 </style>
